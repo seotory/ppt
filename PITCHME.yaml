@@ -1,0 +1,11 @@
+code-line-numbers : true
+
+highlight : ir-black
+
+# transition : fade
+
+loop : true
+
+# Plugins
+charts : true
+mathjax : TeX-AMS_HTML-full

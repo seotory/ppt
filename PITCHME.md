@@ -1,8 +1,27 @@
-code-line-numbers : true
 
 # React api 연동해보기
 
++++
 
+@snap[north-east]
+React api 연동해보기
+@snapend
+
+```
+code
+```
+
++++
+
+## Hola!
+
+---
+
+## Goodbye!
+
++++
+
+## Adiós!
 
 ---
 

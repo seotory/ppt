@@ -10,13 +10,11 @@
 
 <br/>
 
-@ul
-
+@ul[](true)
 - 처음에는 **@color[#DC143C](react-thunk)** 를 고려해 봄
 - 진입장벽, npmall 프로젝트는 크기가 작음
 - 그냥 심플하게 가자!
 - 그러나 프로젝트 크기가 커지면 다시 라이브러리를 고려해보자.
-
 @ulend
 
 +++
@@ -118,6 +116,8 @@ export default class Main extends React.Component {
 +++
 
 ### SPA 페이지 전환 문제
+
+<br/>
 
 - setTimeout, ajax의 @color[#DC143C](callback)이 문제
 
@@ -292,7 +292,9 @@ export const emitPageMove = location => {
 
 ### SPA 페이지 전환 문제
 
-실질적으로 이벤트가 발생되는 곳을 찾음
+실질적으로 이벤트가 발생되는 곳을 찾아보자!
+
+`App.js` 파일 중에 아래의 코드가 있음...
 
 ```
 <Route
@@ -305,7 +307,7 @@ export const emitPageMove = location => {
 />
 ```
 
-Route를 통해 history 객체가 하위 컴포넌트에 props로 전달됨
+Route를 통해 `history`객체가 하위 컴포넌트에 props로 전달됨
 
 +++
 
@@ -489,6 +491,257 @@ export default App;
 
 @[9](eventBus.js 파일 import)
 @[20-24](emitPageMove가 발생했을때 실행되는 함수를 onPageMove에 셋팅함)
+
+---
+
+따봉
+
+---
+
+@transition[fade]
+
+@snap[midpoint]
+<h1>본격 koa 사용해보기</h1>
+@snapend
+
++++
+
+### 본격 koa 사용해보기
+
+<br/>
+
+#### node의 web framwork 종류
+- express
+- **koa**
+- hapi
+- 등등등....
+
+#### koa
+- core는 매우 가벼움
+- 미들웨어 중심의 web framwork
+- 여러가지 미들웨어를 섞어서 구현해야함
+- 성능은 express 보다 약간 빠름
+- express는 callback 중심, koa는 async & await 중심
+
++++
+
+### 본격 koa 사용해보기
+
+server.js 살펴보기
+
+```
+const fs = require('fs');
+const path = require('path');
+
+const Koa = require('koa');
+const cors = require('koa-cors');
+const logger = require('koa-logger');
+const serve = require('koa-static');
+const favicon = require('koa-favicon');
+const bodyParser = require('koa-bodyparser');
+const Raven = require('raven');
+const program = require('commander');
+
+const { routers } = require('./routers');
+const { render, getStore } = require('./render/render');
+const logo = require('./logo');
+
+const DEFAULT_PORT = 3001;
+
+const app = new Koa();
+const template = fs.readFileSync(path.resolve(__dirname, '../build/index.html'), { encoding: 'utf8' });
+
+program
+.option('-p, --port [num]', 'server port')
+.parse(process.argv);
+
+const PORT = program.port || DEFAULT_PORT;
+
+// Error logging. 
+// https://sentry.io
+// https://sentry.io/seotory/npmall/ 
+Raven.config('https://5a11168212984e6ba49f1876938a2dfb@sentry.io/1266535', {
+  environment: process.env.NODE_ENV,
+  tags: {
+    port: PORT
+  }
+}).install();
+
+// 에러 발생시 sentry로 보냄
+app.on('error', function (err) {
+  Raven.captureException(err, function (err, eventId) {
+      console.log('Reported error ' + eventId);
+  });
+});
+
+// cors 지원
+app.use(cors());
+
+// 로깅 지원을 위한 설정
+app.use(logger());
+
+// post parser
+app.use(bodyParser());
+
+// 파비콘
+app.use(favicon(path.resolve(__dirname, '../build/favicon.ico')));
+
+// react app을 webpack으로 실행시키면 나오는 빌드 폴더를 기준으로 라우팅
+app.use(serve(path.resolve(__dirname, '../build/')));
+
+// router inject into app
+routers
+  .prefix('/api')
+  .targetFiles(['./order','./product','./mall', './test'])
+  .inject(app);
+
+// React SSR 지원
+app.use(async ctx => {
+
+  const location = ctx.path;
+  const rendered = render(location);
+  console.log(rendered);
+
+  let res = await ctx.get(`/api${location}`);
+  console.dir(res);
+
+  // 해당 문자열을, 템플릿에 있는 '<div id="root"></div> 사이에 넣어줍니다.
+  const page = template
+                .replace(`<div id="root"></div>`, `<div id="root">${rendered}</div>`)
+                // .replace('window.__PRELOADED_STATE__=null', `window.__PRELOADED_STATE__=${JSON.stringify(state).replace(/</g, '\\u003c')}`);
+  ctx.body = page;
+});
+
+console.log(logo.print());
+console.log(`MODE >> ${process.env.NODE_ENV} << MODE`);
+console.log(`=======================================================`);
+console.log('  [SERVER START]');
+console.log(`  http://localhost:${program.port || DEFAULT_PORT}`);
+console.log(`=======================================================`);
+
+app.listen(program.port || DEFAULT_PORT);
+```
+
+@[4-9](koa 및 koa의 미들웨어 import)
+@[19](new Koa를 통해 app 인스턴스 생성)
+@[45-58](미들웨어는 위와 같이 app.use를 사용함)
+@[60-64](라우터를 통해 url 맵핑하는 부분)
+@[90](서버 실행부)
+
++++
+
+### 본격 koa 사용해보기
+
+router `product.js` 살펴보기
+
+```
+const Router = require('koa-router');
+
+const db = require('./../db');
+
+let router = new Router();
+
+/**
+ * 상점에 해당하는 상품 상세
+ */
+router.get('/mall/:mallNo/product/:prodNo', async ctx => {
+  let res = await db.ts(conn => Promise.all([
+    db.mapper(conn, 'selectProductByMall', ctx.params),
+    db.mapper(conn, 'selectProductOption', ctx.params)
+  ]));
+  let product = res[0][0];
+  let opsInfo = {};
+  res[1].map(option => {
+    option.hasSubOptions = false;
+    if (option.depth == 1) {
+      opsInfo[option.opNo] = option;
+      opsInfo[option.opNo].subOptions = [];
+    }
+    if (option.depth == 2 && opsInfo[option.prntOpNo]) {
+      opsInfo[option.prntOpNo].hasSubOptions = true;
+      opsInfo[option.prntOpNo].subOptions.push(option);
+    }
+  });
+  product.options = Object.keys(opsInfo).map(key => opsInfo[key]);
+  ctx.body = product;
+})
+
+/**
+ * 상품 삭제
+ */
+router.delete('/mall/:mallNo/product/:prodNo', async ctx => {
+  await db.ts(conn => Promise.all([
+    db.mapper(conn, 'deleteProduct', ctx.params),
+    db.mapper(conn, 'deleteProductOptions', ctx.params),
+    db.mapper(conn, 'deleteMallProduct', ctx.params),
+  ]));
+  ctx.body = 'success';
+})
+
+/**
+ * 상점에 해당하는 상품 리스트 목록
+ * TODO: 리스팅 기능
+ */
+router.get('/mall/:mallNo/products', async ctx => {
+  ctx.body = await db.mapper('selectProductsByMall', ctx.params);
+})
+
+/**
+ * 상품에 해당하는 옵션 정보 로드
+ */
+router.get('/mall/:mallNo/product/:prodNo/options', async ctx => {
+  let res = await db.mapper('selectProductOption', ctx.params);
+  let opsInfo = {};
+
+  res.map(option => {
+    option.hasSubOptions = false;
+    if (option.depth == 1) {
+      opsInfo[option.opNo] = option;
+      opsInfo[option.opNo].subOptions = [];
+    }
+    if (option.depth == 2 && opsInfo[option.prntOpNo]) {
+      opsInfo[option.prntOpNo].hasSubOptions = true;
+      opsInfo[option.prntOpNo].subOptions.push(option);
+    }
+  });
+
+  ctx.body = Object.keys(opsInfo).map(key => opsInfo[key]);
+})
+
+/**
+ * form 데이터 저장
+ */
+router.post('/mall/:mallNo/product', async ctx => {
+  let params = ctx.params;
+  let formData = ctx.request.body;
+  console.log(formData);
+
+  await db.ts(async conn => {
+    let res = await db.mapper(conn, 'insertProduct', formData);
+    let prodNo = res.insertId;
+    let promiseAry = [];
+
+    if (formData.opYn == 'Y') {
+      formData.options.map(option => {
+        option.prodNo = prodNo;
+        promiseAry.push(db.mapper(conn, 'insertProductOptions', option));
+      })
+    }
+    promiseAry.push(db.mapper(conn, 'insertMallProduct', {mallNo: params.mallNo, prodNo: prodNo}));
+    return await Promise.all(promiseAry);
+  });
+  ctx.body = 'success';
+})
+
+module.exports = router;
+```
+
+@[1](koa-router 미들웨어를 사용하기 때문에 import)
+@[3](new Router를 사용해서 router 인스턴스를 생성)
+@[10](router에 사용되는 api url 및 method를 명시)
+@[11-14](db를 호출하여 데이터를 가져옴)
+@[15-28](데이터 가공)
+@[29](response를 만들어서 api 응답)
 
 ---
 

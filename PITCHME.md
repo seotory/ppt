@@ -1,7 +1,7 @@
+@transition[fade]
+
 @snap[midpoint]
-
-# React api 연동해보기
-
+<h1>React api 연동해보기</h1>
 @snapend
 
 +++
@@ -10,8 +10,8 @@
 
 @ul
 
-- 처음에는 react-thunk 를 고려해 봄
-  - 너무 복잡한 단계가 생길 것 같음
+- 처음에는 **@color[#DC143C](react-thunk)** 를 고려해 봄
+- 
 - 그냥 심플하게 가자!
 
 @ulend
@@ -96,8 +96,10 @@ export default class Main extends React.Component {
 }
 ```
 
-@[16](react 생명주기를 이용한 ajax 호출)
-@[19-22](async, await를 이용한 호출)
+@[16](react 생명주기 중 **componentDidMount** 이용한 ajax 호출)
+@[16,19](async, await를 이용한 호출)
+@[18,27](try-catch 문을 이용한 error 처리)
+@[28-31](에러 발생시 알럿 생성)
 
 ---
 

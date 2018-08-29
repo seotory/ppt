@@ -1,5 +1,8 @@
+@transition[none]
 
+@snap[midPoint]
 # React api 연동해보기
+@snapend
 
 +++
 

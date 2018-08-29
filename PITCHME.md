@@ -868,12 +868,12 @@ module.exports = func => getConnection().then(conn => {
 @transition[fade]
 
 @snap[midpoint]
-<h1>5. pm2를 사용해서 node app 관리하기</h1>
+<h1>5. pm2를 사용한 node app 관리</h1>
 @snapend
 
 +++
 
-### pm2를 사용해서 node app 관리하기
+### pm2를 사용한 node app 관리
 
 pm2는 global로 설치
 

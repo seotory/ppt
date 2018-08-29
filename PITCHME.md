@@ -786,11 +786,80 @@ module.exports = pool;
 
 ### node에서 mysql 사용하기
 
-아래와 같이 만들어진 풀을 사용할 수 있음
+단일 쿼리는 아래와 같이 만들어진 풀을 사용할 수 있음
 
 ```
 conn.query(sql, params, (error, result, fields) => {
   console.log(result);
+});
+```
+
++++
+
+### node에서 mysql 사용하기
+
+사용하기 편하게 트랜잭션까지 지원해줌
+
+```
+const dbPool = require('../db/pool');
+
+let getConnection = () => new Promise((resolve, reject) => {
+  dbPool.getConnection((err, conn) => {
+    if (err) {
+      reject(err);
+    }
+    resolve(conn);
+  })
+});
+
+let beginTransaction = conn => new Promise((resolve, reject) => {
+  conn.beginTransaction(function(err) {
+    if (err) {
+      reject(err);
+    }
+    resolve();
+  });
+});
+
+let rollback = conn => new Promise((resolve, reject) => {
+  conn.rollback(function() {
+    resolve();
+  });
+});
+
+let commit = conn => new Promise((resolve, reject) => {
+  conn.commit(function(err) {
+    if (err) {
+      reject(err);
+    }
+    resolve();
+  });
+})
+
+module.exports = func => getConnection().then(conn => {
+  return beginTransaction(conn)
+    .then(() => {
+      return func(conn).catch(e => {
+        console.log(e);
+        rollback(conn).then(()=>conn.release());
+        throw e;
+      })
+    })
+    .then(result => {
+      commit(conn).then(() => {
+        console.info('connection release.')
+        conn.release();
+      });
+      return result;
+    })
+    .catch(e => {
+      console.log(e);
+      rollback(conn).then(() => {
+        console.info('connection release.')
+        conn.release();
+      });
+      throw e;
+    });
 });
 ```
 
@@ -811,6 +880,17 @@ pm2는 global로 설치
 ```
 npm install -g pm2
 ```
+
+
+---
+
+@transition[fade]
+
+@snap[midpoint]
+<h1>6. node app error 로깅</h1>
+@snapend
+
++++
 
 ---
 

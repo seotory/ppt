@@ -14,7 +14,7 @@
 - 처음에는 **@color[#DC143C](react-thunk)** 를 고려해 봄
 - 진입장벽, npmall 프로젝트는 크기가 작음
 - 그냥 심플하게 가자!
-- 그러나 프로젝트 크기가 커지면 다시 라이브러리를 고려해보자.
+- 프로젝트 크기가 커지면 다시 라이브러리를 고려해보자.
 @ulend
 
 +++
@@ -266,7 +266,7 @@ export const cancelAll = () => {
 
 ### SPA 페이지 전환 문제
 
-observer 패턴을 사용하기 위해 event bus 생성  
+observer 패턴을 사용하기 위해 event emitter 생성  
 `src/utils/eventBus.js`
 
 ```
@@ -494,7 +494,13 @@ export default App;
 
 ---
 
-![따봉](http://2runzzal.com/media/a01SYUN0WDZJRUhaTFRDL1Y3K3VlQT09/thum.jpg)
+@transition[fade]
+
+# 해결 완료!
+
+@snap[midpoint]
+![따봉](https://media.metrolatam.com/2018/05/08/rambomeme-bff57a46e4aec97ce611fba845ea13f3-1200x800.jpg)
+@snapend
 
 ---
 

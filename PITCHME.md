@@ -8,10 +8,11 @@
 
 **React api 연동해보기**
 
+<br/>
+
 @ul
 
 - 처음에는 **@color[#DC143C](react-thunk)** 를 고려해 봄
-- 
 - 그냥 심플하게 가자!
 
 @ulend
@@ -100,6 +101,8 @@ export default class Main extends React.Component {
 @[16,19](async, await를 이용한 호출)
 @[18,27](try-catch 문을 이용한 error 처리)
 @[28-31](에러 발생시 알럿 생성)
+@[24-27](결과를 받으면 state에 셋팅)
+@[49](render 함수를 통해 html 재작성)
 
 ---
 

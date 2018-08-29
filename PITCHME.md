@@ -1,4 +1,4 @@
-@transition[fade]
+@transition[none]
 
 @snap[midpoint]
 <h1>React api 연동해보기</h1>
@@ -109,7 +109,7 @@ export default class Main extends React.Component {
 
 ---
 
-@transition[fade]
+@transition[none]
 
 @snap[midpoint]
 <h1>SPA 페이지 전환 문제</h1>
@@ -126,7 +126,8 @@ export default class Main extends React.Component {
 
 ### SPA 페이지 전환 문제
 
-setTimeout 라이브러리 작성
+setTimeout 공통 라이브러리 작성
+> src/utils/timerSupport.js
 
 ```
 import { objectSize } from './coreHelper';
@@ -201,7 +202,8 @@ export const cancelAll = () => {
 
 ### SPA 페이지 전환 문제
 
-ajax 라이브러리 작성
+api 공통 라이브러리 작성
+> src/utils/apiSupport.js
 
 ```
 import axios from 'axios';

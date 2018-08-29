@@ -496,8 +496,6 @@ export default App;
 
 @transition[fade]
 
-# 해결 완료!
-
 @snap[midpoint]
 ![따봉](https://media.metrolatam.com/2018/05/08/rambomeme-bff57a46e4aec97ce611fba845ea13f3-1200x800.jpg)
 @snapend

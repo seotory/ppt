@@ -6,7 +6,7 @@
 
 +++
 
-### React api 연동해보기
+### @css[color-point](React api 연동해보기)
 
 <br/>
 
@@ -19,7 +19,7 @@
 
 +++
 
-### React api 연동해보기
+### @css[color-point](React api 연동해보기)
 
 ```
 const props = {
@@ -115,7 +115,7 @@ export default class Main extends React.Component {
 
 +++
 
-### SPA 페이지 전환 문제
+### @css[color-point](SPA 페이지 전환 문제)
 
 <br/>
 
@@ -123,7 +123,7 @@ export default class Main extends React.Component {
 
 +++
 
-### SPA 페이지 전환 문제
+### @css[color-point](SPA 페이지 전환 문제)
 
 setTimeout 공통 라이브러리 작성  
 `src/utils/timerSupport.js`
@@ -202,7 +202,7 @@ export const cancelAll = () => {
 
 +++
 
-### SPA 페이지 전환 문제
+### @css[color-point](SPA 페이지 전환 문제)
 
 api 공통 라이브러리 작성  
 `src/utils/apiSupport.js`
@@ -264,7 +264,7 @@ export const cancelAll = () => {
 
 +++
 
-### SPA 페이지 전환 문제
+### @css[color-point](SPA 페이지 전환 문제)
 
 observer 패턴을 사용하기 위해 event emitter 생성  
 `src/utils/eventBus.js`
@@ -290,7 +290,7 @@ export const emitPageMove = location => {
 
 +++
 
-### SPA 페이지 전환 문제
+### @css[color-point](SPA 페이지 전환 문제)
 
 실질적으로 이벤트가 발생되는 곳을 찾아보자!
 
@@ -311,7 +311,7 @@ Route를 통해 `history`객체가 하위 컴포넌트에 props로 전달됨
 
 +++
 
-### SPA 페이지 전환 문제
+### @css[color-point](SPA 페이지 전환 문제)
 
 이벤트 발생부
 
@@ -414,7 +414,7 @@ export default class Main extends React.Component {
 
 +++
 
-### SPA 페이지 전환 문제
+### @css[color-point](SPA 페이지 전환 문제)
 
 이벤트 사용부
 
@@ -510,7 +510,7 @@ export default App;
 
 +++
 
-### 본격 koa 사용해보기
+### @css[color-point](본격 koa 사용해보기)
 
 <br/>
 
@@ -529,7 +529,7 @@ export default App;
 
 +++
 
-### 본격 koa 사용해보기
+### @css[color-point](본격 koa 사용해보기)
 
 server.js 살펴보기
 
@@ -634,7 +634,7 @@ app.listen(program.port || DEFAULT_PORT);
 
 +++
 
-### 본격 koa 사용해보기
+### @css[color-point](본격 koa 사용해보기)
 
 router `product.js` 살펴보기
 
@@ -757,7 +757,7 @@ module.exports = router;
 
 +++
 
-### node에서 mysql 사용하기
+### @css[color-point](node에서 mysql 사용하기)
 
 커낵션 풀 생성
 
@@ -789,7 +789,7 @@ module.exports = pool;
 
 +++
 
-### node에서 mysql 사용하기
+### @css[color-point](node에서 mysql 사용하기)
 
 단일 쿼리는 아래와 같이 만들어진 풀을 사용할 수 있음
 
@@ -801,7 +801,7 @@ pool.query(sql, params, (error, result, fields) => {
 
 +++
 
-### node에서 mysql 사용하기
+### @css[color-point](node에서 mysql 사용하기)
 
 사용하기 편하게 트랜잭션 lib를 제작
 
@@ -878,7 +878,7 @@ module.exports = func => getConnection().then(conn => {
 
 +++
 
-### pm2를 사용한 node app 관리
+### @css[color-point](pm2를 사용한 node app 관리)
 
 pm2는 global로 설치
 

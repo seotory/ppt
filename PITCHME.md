@@ -1078,7 +1078,3 @@ app.on('error', function (err) {
 ```
 
 끝. 참 쉽죠?
-
----
-
-![](https://image.fmkorea.com/files/attach/new/20160521/44021718/363301069/376446192/9e87449cc5d905ebd80e51150a99c6a3.png)

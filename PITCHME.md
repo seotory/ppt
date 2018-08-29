@@ -494,7 +494,7 @@ export default App;
 
 ---
 
-따봉
+![따봉](http://2runzzal.com/media/a01SYUN0WDZJRUhaTFRDL1Y3K3VlQT09/thum.jpg)
 
 ---
 
@@ -737,7 +737,7 @@ module.exports = router;
 ```
 
 @[1](koa-router 미들웨어를 사용하기 때문에 import)
-@[3](new Router를 사용해서 router 인스턴스를 생성)
+@[5](new Router를 사용해서 router 인스턴스를 생성)
 @[10](router에 사용되는 api url 및 method를 명시)
 @[11-14](db를 호출하여 데이터를 가져옴)
 @[15-28](데이터 가공)
@@ -779,6 +779,7 @@ let pool = mysql.createPool(info);
 module.exports = pool;
 ```
 
+@[2](info에 접속 정보를 가지고 있음)
 @[4-15](쿼리문의 패턴 매칭을 통해 param 값을 입력 시키기 위한 포맷)
 @[17, 19](커넥션 풀 생성 후 풀 반환)
 
@@ -789,7 +790,7 @@ module.exports = pool;
 단일 쿼리는 아래와 같이 만들어진 풀을 사용할 수 있음
 
 ```
-conn.query(sql, params, (error, result, fields) => {
+pool.query(sql, params, (error, result, fields) => {
   console.log(result);
 });
 ```
@@ -798,7 +799,7 @@ conn.query(sql, params, (error, result, fields) => {
 
 ### node에서 mysql 사용하기
 
-사용하기 편하게 트랜잭션까지 지원해줌
+사용하기 편하게 트랜잭션 lib를 제작
 
 ```
 const dbPool = require('../db/pool');

@@ -1,4 +1,4 @@
-@transition[none]
+@transition[fade]
 
 @snap[midpoint]
 <h1>React api 연동해보기</h1>
@@ -109,7 +109,7 @@ export default class Main extends React.Component {
 
 ---
 
-@transition[none]
+@transition[fade]
 
 @snap[midpoint]
 <h1>SPA 페이지 전환 문제</h1>
@@ -119,14 +119,13 @@ export default class Main extends React.Component {
 
 ### SPA 페이지 전환 문제
 
-- setTimeout, ajax의 callback이 문제
-
+- setTimeout, ajax의 @color[#DC143C](callback)이 문제
 
 +++
 
 ### SPA 페이지 전환 문제
 
-setTimeout 공통 라이브러리 작성
+setTimeout 공통 라이브러리 작성  
 `src/utils/timerSupport.js`
 
 ```
@@ -205,7 +204,7 @@ export const cancelAll = () => {
 
 ### SPA 페이지 전환 문제
 
-api 공통 라이브러리 작성
+api 공통 라이브러리 작성  
 `src/utils/apiSupport.js`
 
 ```
@@ -260,16 +259,236 @@ export const cancelAll = () => {
 }
 ```
 
+@[21-40](send 함수를 통해 api 실행)
+@[45-49](cancelAll 함수를 통해 현재 실행 중인 모든 api 캔슬)
+
 +++
 
 ### SPA 페이지 전환 문제
 
-SPA의 page move event가 발생하는 포인트를 찾음
+observer 패턴을 사용하기 위해 event bus 생성  
+`src/utils/eventBus.js`
 
 ```
+import events from 'events';
+
+const PAGE_MOVE = 'PAGE_MOVE';
+
+const eventEmitter = new events.EventEmitter();
+
+export const onPageMove = func => {
+  eventEmitter.on(PAGE_MOVE, func);
+}
+
+export const emitPageMove = location => {
+  eventEmitter.emit(PAGE_MOVE, location);
+}
 ```
+
+@[11-13](이벤트를 발생시키는 함수)
+@[7-9](이벤트가 발생되면 실행되는 함수)
 
 +++
+
+### SPA 페이지 전환 문제
+
+실질적으로 이벤트가 발생되는 곳을 찾음
+
+```
+<Route
+  path="/mall/:mallNo/product/new"
+  render={props => (
+  <DefaultLayout {...Object.assign({}, props)}>
+    <ProductNew/>
+  </DefaultLayout>
+  )}
+/>
+```
+
+Route를 통해 history 객체가 하위 컴포넌트에 props로 전달됨
+
++++
+
+### SPA 페이지 전환 문제
+
+이벤트 발생부
+
+```
+import React from 'react';
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Alert from './Alert';
+
+import * as apiSupport from '../../../utils/apiSupport';
+import { emitPageMove } from '../../../utils/eventBus';
+import { API_HTTP } from '../../../utils/globalData';
+
+import { dispatch } from '../../../store';
+import { alertSender } from '../../../actions/alertAction';
+
+import './index.css';
+
+// 하위에 넘겨줄 props를 만듦
+const props = {
+  alertSender: alertSender(dispatch)
+}
+
+export default class Main extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isApiLoad: false,
+      mall: {}
+    }
+    this.handleLocationChange = this.handleLocationChange.bind(this);
+  }
+
+  async componentDidMount() {
+    const { mallNo } = this.props.match.params;
+    try {
+      let res = await apiSupport.send({
+        method: 'get',
+        url: `${API_HTTP}/api/mall/${mallNo}`
+      });
+      this.setState({
+        isApiLoad: true,
+        mall: res.data.id ? res.data : null
+      });
+    } catch (e) {
+      props.alertSender({
+        type: 'danger',
+        body: JSON.stringify(e)
+      });
+    }
+  }
+
+  componentWillMount() {
+    const { history } = this.props;
+    this.unsubscribeFromHistory = history.listen(this.handleLocationChange);
+    this.handleLocationChange(history.location);
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeFromHistory) this.unsubscribeFromHistory();
+  }
+
+  handleLocationChange(location) {
+    emitPageMove(location);
+  }
+  
+  render() {
+    // children 컴포넌트에 필요한 props를 셋팅해서 호출한다.
+    const childrenWithProps = React.Children.map(this.props.children, child => 
+      React.cloneElement(child, Object.assign({}, props, this.props, {mall: this.state.mall}))
+    );
+
+    return (
+      ! this.state.mall
+      ? 
+      <h1>사용할 수 없는 테스트 상점입니다. url을 확인해주세요.</h1>
+      :
+      <div className="wrap">
+        <Alert />
+        <Header mall={this.state.mall} />
+        <Nav mall={this.state.mall} />
+        <section className="body">
+          <div className="container">
+            {this.state.isApiLoad && childrenWithProps}
+          </div>
+        </section>
+        <Footer />
+      </div>
+    )
+  }
+}
+```
+
+@[9](전에 만든 eventBus.js를 import)
+@[54, 62-64](실질적으로 page move가 일어나는 경우 발생하는 callback 함수)
+@[63](callback이 발생할때 emitPageMove 함수를 실행)
+
++++
+
+### SPA 페이지 전환 문제
+
+이벤트 사용부
+
+```
+import React from 'react';
+import {Route, Switch} from 'react-router-dom';
+
+import RouterError from './components/RouterError'
+import { DefaultLayout } from './components/layouts';
+import { Product, ProductNew, Products, Cart } from './components/pages';
+
+import { isBrowser } from './utils/coreHelper';
+import { onPageMove } from './utils/eventBus';
+import * as apiSupport from './utils/apiSupport';
+import * as timerSupport from './utils/timerSupport';
+
+if ( ! isBrowser() ) {
+  global.window = {};
+}
+
+/**
+ * 이벤트 버스를 통해 페이지 이동에 대한 세부 로직을 밖으로 꺼내옴
+ */
+onPageMove(location => {
+  console.log(`PAGE MOVE EVENT`, location);
+  timerSupport.cancelAll();
+  apiSupport.cancelAll();
+})
+
+class App extends React.Component {
+  render() {
+    return (
+      <Switch>
+        <Route
+          path="/mall/:mallNo/product/new"
+          render={props => (
+            <DefaultLayout {...Object.assign({}, props)}>
+              <ProductNew/>
+            </DefaultLayout>
+          )}
+        />
+        <Route
+          path="/mall/:mallNo/product/:prodNo"
+          render={props => (
+            <DefaultLayout {...Object.assign({}, props)}>
+              <Product/>
+            </DefaultLayout>
+          )}
+        />
+        <Route
+          path="/mall/:mallNo/cart"
+          render={props => (
+            <DefaultLayout {...Object.assign({}, props)}>
+              <Cart/>
+            </DefaultLayout>
+          )}
+        />
+        <Route
+          path="/mall/:mallNo"
+          render={props => (
+            <DefaultLayout {...Object.assign({}, props)}>
+              <Products/>
+            </DefaultLayout>
+          )}
+        />
+        <Route component={RouterError}/>
+      </Switch>
+    );
+  }
+}
+
+export default App;
+```
+
+@[9](eventBus.js 파일 import)
+@[20-24](emitPageMove가 발생했을때 실행되는 함수를 onPageMove에 셋팅함)
 
 ---
 

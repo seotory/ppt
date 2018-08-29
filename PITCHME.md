@@ -127,7 +127,7 @@ export default class Main extends React.Component {
 ### SPA 페이지 전환 문제
 
 setTimeout 공통 라이브러리 작성
-> src/utils/timerSupport.js
+`src/utils/timerSupport.js`
 
 ```
 import { objectSize } from './coreHelper';
@@ -198,12 +198,15 @@ export const cancelAll = () => {
 }
 ```
 
+@[25-45](add 함수를 통해 타이머 추가를 실행)
+@[64-66](cancelAll 함수를 통해 현재 실행 중인 모든 타이머 캔슬)
+
 +++
 
 ### SPA 페이지 전환 문제
 
 api 공통 라이브러리 작성
-> src/utils/apiSupport.js
+`src/utils/apiSupport.js`
 
 ```
 import axios from 'axios';

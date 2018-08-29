@@ -11,7 +11,7 @@
 <br/>
 
 @ul[](true)
-- 처음에는 **@color[#DC143C](react-thunk)** 를 고려해 봄
+- 처음에는 **@css[color-point](react-thunk)** 를 고려해 봄
 - 진입장벽, npmall 프로젝트는 크기가 작음
 - 그냥 심플하게 가자!
 - 프로젝트 크기가 커지면 다시 라이브러리를 고려해보자.
@@ -826,46 +826,59 @@ let beginTransaction = conn => new Promise((resolve, reject) => {
   });
 });
 
-let rollback = conn => new Promise((resolve, reject) => {
+let rollback = conn => (new Promise((resolve, reject) => {
   conn.rollback(function() {
     resolve();
   });
-});
+})).then(() => conn.release());
 
-let commit = conn => new Promise((resolve, reject) => {
+let commit = conn => (new Promise((resolve, reject) => {
   conn.commit(function(err) {
     if (err) {
       reject(err);
     }
     resolve();
   });
-})
+})).then(() => conn.release());
 
 module.exports = func => getConnection().then(conn => {
   return beginTransaction(conn)
     .then(() => {
       return func(conn).catch(e => {
         console.log(e);
-        rollback(conn).then(()=>conn.release());
+        rollback(conn);
         throw e;
       })
     })
     .then(result => {
-      commit(conn).then(() => {
-        console.info('connection release.')
-        conn.release();
-      });
+      commit(conn);
       return result;
     })
     .catch(e => {
       console.log(e);
-      rollback(conn).then(() => {
-        console.info('connection release.')
-        conn.release();
-      });
+      rollback(conn);
       throw e;
     });
 });
+```
+
+@[36](getConnection을 통해 connection 객채를 얻어옴)
+@[37](beginTransaction으로 트랜잭션 시작을 알림)
+@[36,39](인자로 보낸 함수를 실행시킴)
+@[41,46,51](rollback 또는 commit으로 트랜잭션 종료)
+@[25,34](사용했던 connection 반환)
+
++++
+
+### @css[color-point](node에서 mysql 사용하기)
+
+아래처럼 트랜잭션을 사용함
+
+```
+let res = await db.ts(conn => Promise.all([
+  db.mapper(conn, 'selectProductByMall', ctx.params),
+  db.mapper(conn, 'selectProductOption', ctx.params)
+]));
 ```
 
 ---
@@ -880,12 +893,85 @@ module.exports = func => getConnection().then(conn => {
 
 ### @css[color-point](pm2를 사용한 node app 관리)
 
+pm2 
+
+- node.js 프로세스 관리 도구
+- log 관리 기능은 좀 약함(자동 log 로테이션이 안됨)
+- 노드 프로세스 cluster 지원
+
 pm2는 global로 설치
 
 ```
 npm install -g pm2
 ```
 
+아래와 같이 실행시킴
+
+```
+pm2 start pm2.config.js
+```
+
++++
+
+### @css[color-point](pm2를 사용한 node app 관리)
+
+pm2.config.js
+
+```
+console.log(process.env.NODE_ENV)
+
+// 개발환경 셋팅
+let app_dev = [{
+  name      : 'koa',
+  script    : './server/server.js',
+  args      : ['-p', '3000'],
+  env       : {
+    "NODE_ENV": "development"
+  },
+  // log setting
+  out_file        : './logs/koa.log',
+  error_file      : './logs/koa_error.log',
+  log_date_format : "YYYY-MM-DD HH:mm Z"
+}];
+
+let app_prod = [{
+  name      : 'koa',
+  script    : './server/server.js',
+  args      : ['-p', '80'],
+  env       : {
+    "NODE_ENV": "production"
+  },
+  // log setting
+  out_file        : './logs/koa.log',
+  error_file      : './logs/koa_error.log',
+  log_date_format : "YYYY-MM-DD HH:mm Z"
+}];
+
+module.exports = {
+  apps : process.env.NODE_ENV == 'production'
+       ? app_prod
+       : app_dev
+};
+```
+
+@[4-15](개발환경 pm2)
+@[17-28](운영환경 pm2)
+@[31-33](환경에 따라 앱 실행)
+
++++
+
+### @css[color-point](pm2를 사용한 node app 관리)
+
+기타 명령어
+
+- pm2 logs
+- pm2 monit
+- pm2 restart all
+- pm2 stop all
+- pm2 scale <app_name> <number>
+- pm2 pid [app_name]
+- pm2 sendSignal <signal> <pm2_id|name>
+- 등등등....
 
 ---
 

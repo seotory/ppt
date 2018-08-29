@@ -62,7 +62,7 @@ const StateLess = () => {
 
 ### @css[color-point](redux 복습)
 
-![](https://cdn.css-tricks.com/wp-content/uploads/2016/03/redux-article-3-03.svg)
+![redux](https://cdn.css-tricks.com/wp-content/uploads/2016/03/redux-article-3-03.svg)
 
 ---
 

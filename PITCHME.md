@@ -1,7 +1,75 @@
 @transition[fade]
 
 @snap[midpoint]
-<h1>1. React api 연동해보기</h1>
+<h1>1. React 복습</h1>
+@snapend
+
++++
+
+### @css[color-point](React 복습)
+
+컴포넌트 생성 1
+
+```
+var AppES5 = React.createClass({
+  render: function() {
+    return(
+      <div>Hello World</div>
+    );
+  }
+});
+```
+
++++
+
+### @css[color-point](React 복습)
+
+컴포넌트 생성 2
+
+```
+class AppES6 extends React.Component{
+  render() {
+    return(
+      <div>Hello World</div>
+    );
+  }
+};
+```
+
++++
+
+### @css[color-point](React 복습)
+
+컴포넌트 생성 3
+
+```
+const StateLess = () => {
+  return (
+    <div>Hello World</div>
+  )
+}
+```
+
+---
+
+@transition[fade]
+
+@snap[midpoint]
+<h1>2. redux 복습</h1>
+@snapend
+
++++
+
+### @css[color-point](redux 복습)
+
+![](https://cdn.css-tricks.com/wp-content/uploads/2016/03/redux-article-3-03.svg)
+
+---
+
+@transition[fade]
+
+@snap[midpoint]
+<h1>3. React api 연동해보기</h1>
 @snapend
 
 +++
@@ -110,7 +178,7 @@ export default class Main extends React.Component {
 @transition[fade]
 
 @snap[midpoint]
-<h1>2. SPA 페이지 전환 문제</h1>
+<h1>4. SPA 페이지 전환 문제</h1>
 @snapend
 
 +++
@@ -505,7 +573,7 @@ export default App;
 @transition[fade]
 
 @snap[midpoint]
-<h1>3. 본격 koa 사용해보기</h1>
+<h1>5. 본격 koa 사용해보기</h1>
 @snapend
 
 +++
@@ -750,7 +818,7 @@ module.exports = router;
 @transition[fade]
 
 @snap[midpoint]
-<h1>4. node에서 mysql 사용하기</h1>
+<h1>6. node에서 mysql 사용하기</h1>
 @snapend
 
 +++
@@ -784,18 +852,6 @@ module.exports = pool;
 @[2](info에 접속 정보를 가지고 있음)
 @[4-15](쿼리문의 패턴 매칭을 통해 param 값을 입력 시키기 위한 포맷)
 @[17, 19](커넥션 풀 생성 후 풀 반환)
-
-+++
-
-### @css[color-point](node에서 mysql 사용하기)
-
-단일 쿼리는 아래와 같이 만들어진 풀을 사용할 수 있음
-
-```
-pool.query(sql, params, (error, result, fields) => {
-  console.log(result);
-});
-```
 
 +++
 
@@ -884,7 +940,7 @@ let res = await db.ts(conn => Promise.all([
 @transition[fade]
 
 @snap[midpoint]
-<h1>5. pm2를 사용한 node app 관리</h1>
+<h1>7. pm2를 사용한 node app 관리</h1>
 @snapend
 
 +++
@@ -976,7 +1032,7 @@ module.exports = {
 @transition[fade]
 
 @snap[midpoint]
-<h1>6. node app error 로깅</h1>
+<h1>8. node app error 로깅</h1>
 @snapend
 
 +++
@@ -1025,4 +1081,4 @@ app.on('error', function (err) {
 
 ---
 
-![Flux Explained](https://facebook.github.io/flux/img/flux-simple-f8-diagram-explained-1300w.png)
+![](https://image.fmkorea.com/files/attach/new/20160521/44021718/363301069/376446192/9e87449cc5d905ebd80e51150a99c6a3.png)

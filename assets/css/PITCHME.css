@@ -36,6 +36,14 @@
     padding-left: 30px;
 }
 
+.reveal blockquote {
+    width: 100%
+}
+
+.reveal blockquote > p {
+    margin: 0px;
+}
+
 .reveal .slides > section, 
 .reveal .slides > section > section {
     margin: 0px;

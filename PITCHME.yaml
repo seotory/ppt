@@ -4,7 +4,7 @@ code-line-numbers : true
 
 highlight : ir-black
 
-theme : simple
+theme : black
 
 # transition : fade
 

@@ -1,5 +1,5 @@
 
-# @css[title](React api 연동해보기)
+# React api 연동해보기
 
 +++
 

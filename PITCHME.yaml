@@ -9,3 +9,6 @@ loop : true
 # Plugins
 charts : true
 mathjax : TeX-AMS_HTML-full
+
+# css
+theme-override : assets/css/PITCHME.css

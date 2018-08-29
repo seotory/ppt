@@ -4,6 +4,8 @@ code-line-numbers : true
 
 highlight : ir-black
 
+theme : night
+
 # transition : fade
 
 # loop : true

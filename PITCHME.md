@@ -103,7 +103,7 @@ export default class Main extends React.Component {
 @[16,19](async, await를 이용한 호출)
 @[18,27](try-catch 문을 이용한 error 처리)
 @[28-31](에러 발생시 알럿 생성)
-@[24-26](결과를 받으면 state에 셋팅)
+@[23-26](결과를 받으면 state에 셋팅)
 @[49](render 함수를 통해 html 생성)
 @[66](api의 성공 여부에 따라 하위 컴포넌트 생성)
 

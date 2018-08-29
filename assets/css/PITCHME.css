@@ -6,6 +6,26 @@
     font-size: 2em;
 }
 
+.reveal h2 {
+    font-size: 1.75em;
+}
+
+.reveal h3 {
+    font-size: 1.5em;
+}
+
+.reveal h4 {
+    font-size: 1.3em;
+}
+
+.reveal h5 {
+    font-size: 1.15em;
+}
+
+.reveal h6 {
+    font-size: 1em;
+}
+
 .reveal pre {
     width: 100%;
     font-size: 0.6em;
@@ -19,4 +39,8 @@
 .reveal .slides > section, 
 .reveal .slides > section > section {
     margin: 0px;
+}
+
+.midpoint {
+    width: 100%;
 }

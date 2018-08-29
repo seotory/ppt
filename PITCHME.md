@@ -512,15 +512,13 @@ export default App;
 
 ### @css[color-point](본격 koa 사용해보기)
 
-<br/>
-
-#### node의 web framwork 종류
+##### node의 web framwork 종류
 - express
-- **koa**
+- **@css[color-point](koa)**
 - hapi
 - 등등등....
 
-#### koa
+##### koa
 - core는 매우 가벼움
 - 미들웨어 중심의 web framwork
 - 여러가지 미들웨어를 섞어서 구현해야함
@@ -982,6 +980,48 @@ module.exports = {
 @snapend
 
 +++
+
+### @css[color-point](node app error 로깅)
+
+sentry.io
+
+- 개발자는 error 로그에 민감
+- 서버 들어가서 log 파일 열어보긴 귀찮음
+- 빠르고 편한 뭔가가 있으면 좋겠음
+- 슬랙처럼 메세지의 양에 따라 과금
+
++++
+
+### @css[color-point](node app error 로깅)
+
+지원언어
+
+![]()
+
++++
+
+### @css[color-point](node app error 로깅)
+
+sentry.io 셋팅하기 
+
+```
+const Raven = require('raven');
+
+Raven.config('https://5a11168212984e6ba49f1876938a2dfb@sentry.io/1266535', {
+  environment: process.env.NODE_ENV,
+  tags: {
+    port: PORT
+  }
+}).install();
+
+app.on('error', function (err) {
+  Raven.captureException(err, function (err, eventId) {
+      console.log('Reported error ' + eventId);
+  });
+});
+```
+
+끝. 참 쉽죠?
 
 ---
 

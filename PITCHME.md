@@ -1,7 +1,7 @@
 @transition[fade]
 
 @snap[midpoint]
-<h1>React api 연동해보기</h1>
+<h1>1. React api 연동해보기</h1>
 @snapend
 
 +++
@@ -110,7 +110,7 @@ export default class Main extends React.Component {
 @transition[fade]
 
 @snap[midpoint]
-<h1>SPA 페이지 전환 문제</h1>
+<h1>2. SPA 페이지 전환 문제</h1>
 @snapend
 
 +++
@@ -501,7 +501,7 @@ export default App;
 @transition[fade]
 
 @snap[midpoint]
-<h1>본격 koa 사용해보기</h1>
+<h1>3. 본격 koa 사용해보기</h1>
 @snapend
 
 +++
@@ -742,6 +742,75 @@ module.exports = router;
 @[11-14](db를 호출하여 데이터를 가져옴)
 @[15-28](데이터 가공)
 @[29](response를 만들어서 api 응답)
+
+---
+
+@transition[fade]
+
+@snap[midpoint]
+<h1>4. node에서 mysql 사용하기</h1>
+@snapend
+
++++
+
+### node에서 mysql 사용하기
+
+커낵션 풀 생성
+
+```
+const mysql = require('mysql2');
+const info = require('./info');
+
+info.queryFormat = function (query, values) {
+  if (!values) return query;
+  query = query.replace(/\:(\w+)/g, function (txt, key) {
+    if (values.hasOwnProperty(key) && values[key]) {
+      return this.escape(values[key]);
+    } else {
+      return null;
+    }
+  }.bind(this));
+  console.log(query);
+  return query;
+};
+
+let pool = mysql.createPool(info);
+
+module.exports = pool;
+```
+
+@[4-15](쿼리문의 패턴 매칭을 통해 param 값을 입력 시키기 위한 포맷)
+@[17, 19](커넥션 풀 생성 후 풀 반환)
+
++++
+
+### node에서 mysql 사용하기
+
+아래와 같이 만들어진 풀을 사용할 수 있음
+
+```
+conn.query(sql, params, (error, result, fields) => {
+  console.log(result);
+});
+```
+
+---
+
+@transition[fade]
+
+@snap[midpoint]
+<h1>5. pm2를 사용해서 node app 관리하기</h1>
+@snapend
+
++++
+
+### pm2를 사용해서 node app 관리하기
+
+pm2는 global로 설치
+
+```
+npm install -g pm2
+```
 
 ---
 

@@ -1020,11 +1020,11 @@ module.exports = {
 
 - pm2 logs
 - pm2 monit
-- pm2 restart all
-- pm2 stop all
-- pm2 scale <app_name> <number>
-- pm2 pid [app_name]
-- pm2 sendSignal <signal> <pm2_id|name>
+- pm2 restart ...
+- pm2 stop ...
+- pm2 scale ...
+- pm2 pid ...
+- pm2 sendSignal ...
 - 등등등....
 
 ---
@@ -1052,7 +1052,7 @@ sentry.io
 
 지원언어
 
-![]()
+![img](img/ggg.PNG)
 
 +++
 
